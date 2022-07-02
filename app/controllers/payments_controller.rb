@@ -16,10 +16,9 @@ class PaymentsController < ApplicationController
   end 
 
   def update 
-    overdue_payment = Payment.date_validation(payment_params)
     if @payment.update(payment_params) 
-      if overdue_payment
-      render json: { success: true, notification: "El pago se ejecuto con un 5% de recargo."} 
+      if @payment.overdue?
+        render json: { success: true, notification: "El pago se ejecuto con un 5% de recargo."} 
       else
         render json: { success: true, notification: 'El pago se ejecuto sin cargos extras.'} 
       end
@@ -45,6 +44,7 @@ class PaymentsController < ApplicationController
   def set_payment
     @payment = Payment.find(params[:id]) 
   end 
+
   def payment_params 
     params.permit(:loan_id, :user_id, :payment_amount, :date) 
   end 

@@ -6,10 +6,8 @@ class Payment < ApplicationRecord
   # VALIDATIONS
   validates :user_id, :loan_id, :payment_amount, :date, presence: true
 
-  def self.date_validation(p)
-    today = Time.now.to_date
-    payment_date = Loan.find_by(id: p[:loan_id]).payment_date
-
-    today > payment_date
+  def overdue?
+    Time.now.to_date > self.loan.payment_date
   end
+
 end
